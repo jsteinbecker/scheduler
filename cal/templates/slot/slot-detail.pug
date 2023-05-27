@@ -1,0 +1,45 @@
+extends base
+
+block styles
+    style.
+        .red {color: #e35f5f;}
+        .px20 {padding: 20px;}
+
+block content
+
+    a(href='../../')
+        iconify-icon(icon="mdi:chevron-left")
+        | #{slot.workday.date}
+    .flexrow
+        each other in slot.workday.slots.all
+            if other.shift != slot.shift
+                div.px20
+                    a(href=other.url)= other.shift
+            else
+                div.px20.bg-zinc-100.text-zinc-800.rounded
+                    h1= slot.workday.date
+                    h2= slot.shift
+    if slot.template_employee
+        h6= slot.template_employee
+    else
+        h6 No Template
+    if slot.employee
+        h3= slot.employee
+    else
+        h5.op50
+            i No employee assigned
+
+    .bordered(onclick="document.getElementById('option-explorer').showModal()")
+        span.xs #{slot.fills_with.allowed.count} options
+        span
+            iconify-icon(icon="mdi:chevron-down")
+
+    include fills-with/option
+
+
+    script.
+        document.getElementById('option-explorer').addEventListener('click', function(e) {
+            if(e.target == this) {
+                this.close();
+            }
+        });

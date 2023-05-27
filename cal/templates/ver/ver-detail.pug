@@ -1,0 +1,122 @@
+extends base
+// {% load tags %}
+block mixins
+    mixin actionButton(name, icon, link, cls)
+        a.dark-btn.text-xs(href=link class=cls)
+            | #{name}
+            iconify-icon.text-lg(icon="#{icon}")
+
+
+
+block styles
+    style.
+        .blue {color: #2196f3; margin-right: 5px;}
+        .thin {font-weight: 200; color: #fff9;}
+        .red {color: #f44336;}
+        .op25 {opacity: 0.25;}
+        .btn {padding: 5px 10px; border-radius: 5px; border: none; color: #fff; background-color: #2196f3; margin-right: 5px;}
+        .blue-btn {padding: 5px 10px; border-radius: 5px; border: none; color: #fff; background-color: #2196f3; margin-right: 5px;}
+        .blue-btn:hover {background-color: #1976d2; color: #fff;}
+        .gray-btn {padding: 5px 10px; border-radius: 5px; border: none; color: #fff; background-color: #9e9e9e; margin-right: 5px;}
+        .gray-btn:hover {background-color: #757575; color: #fff;}
+        .dark-btn {padding: 5px 10px; border-radius: 5px; border: none; color: #fff; background-color: #121212; margin-right: 5px;}
+        .dark-btn:hover {background-color: #575757; color: #fff;}
+
+block content
+    script(type="text/hyperscript").
+        behavior Employee
+            on mouseover
+                set $emp to @dataset.employee then
+                log 'MOUSEOVER' then
+                toggle .bg-blue-100 on <.employee[data-employee=$emp]/>
+                until mouseover end
+
+    .p-10
+
+        a(href='../../')
+            iconify-icon(icon="mdi:chevron-left")
+            | Schedule Overview
+        hgroup
+            h4= department
+            h1.text-2xl
+                span.blue v#{version.num}
+                span Schedule #{version.schedule.num}, #{version.schedule.year}
+                span.thin (#{version.schedule.department.name})
+            div(class="rounded-2xl bg-gradient-to-r from-teal-500 via-indigo-500 to-sky-500 p-1 shadow-xl m-2 w-24")
+                div(class="block rounded-xl text-2xl font-thin bg-black p-4")
+                    | #{percent} %
+
+        div.views
+            h3.text-lg
+                i.fas.fa-magnifying-glass
+                | Views
+            a(href='views/unfavorables/') Unfavorables
+
+        div.float-right
+            include ./partials/stats
+
+        .flexrow.w-fit.center-self.mb-2
+            +actionButton("ASSIGN TEMPLATE SLOTS", "mdi:calendar-blank", "actions/assign-templates/", "bg-blue-500")
+            +actionButton("RESET", "fluent:eraser-20-filled", "actions/reset/", "bg-gray-700")
+            +actionButton("SOLVE", "mdi:cogs", "actions/solve/", "bg-gray-700")
+            if version.n_disliked_one_offs > 10
+                +actionButton("RETRY ONE OFF ASSIGNMENTS", "mdi:sync-alert", "actions/retry-one-offs/", "bg-gray-700")
+
+        .flex.flex-row
+            .bordered.text-center
+                .flexrow.w-fit.center-self.mb-2
+                    span.text-xs ALERTS
+                    iconify-icon(icon="solar:siren-bold-duotone")
+                hr.pb-2
+                if version.percent < 0.94
+                        iconify-icon.text-xl.text-red-300(icon="icon-park-solid:pie-one")
+
+            .border.rounded.px-2.w-fit
+                table
+                    thead
+                        tr.text-xs.uppercase
+                            th.pt-1 Date
+                            th.pt-1 Actions
+                            each shift in all_shifts
+                                th= shift
+
+                    each workday in workdays
+                        tr(data-week=workday.wk_id)
+
+                            // WORKDAY HEADING //
+                            td #{workday.date} #{workday.weekday_display}
+                            td
+                                a(href="wd/#{workday.date}/")
+                                    iconify-icon(icon="mdi:magnify")
+
+                            each shift in all_shifts
+
+                                // WORKDAY SHIFTS //
+                                td
+                                    each slot in workday.slots.all
+                                        if slot.shift == shift
+                                            if slot.employee != None
+                                                .bordered
+                                                    a(href="emp/#{slot.employee.slug}/")= slot.employee.initials
+                                                    if slot.state == 'P'
+                                                        iconify-icon.text-red-400(icon="ph:shield-warning-bold" @inline="true")
+                                                    if slot.is_one_off
+                                                        iconify-icon.text-xs(icon="uim:sync-exclamation" inline="true")
+                                            else
+                                                if slot.template_employee != None
+                                                    iconify-icon.blue(icon="mdi:account-check")
+                                                if slot.fills_with.count == 0
+                                                    iconify-icon.red(icon="mdi:account-question")
+                                                if slot.fills_with.count > 0
+                                                    span.op25.text-2xs= slot.option_count
+
+
+    script.
+        // on doc ready, add .bgblueop25 to all rows with data-week % 2 == 0
+        $(document).ready(function() {
+            $("tr[data-week]").each(function() {
+                if ($(this).data("week") % 2 == 0) {
+                    $(this).addClass("bgblueop25");
+                }
+            });
+        });

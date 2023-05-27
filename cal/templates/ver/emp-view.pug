@@ -1,0 +1,23 @@
+extends base
+
+block content
+
+    .m-6
+        a(href="../../")
+            iconify-icon(icon="mdi:chevron-left")
+            | Back
+        h1= emp
+
+        - var i = 1
+
+        each prd in prds
+            div.font-thin.text-xl.mt-4 PAY PERIOD #{i}
+            - var pd = prd[0]
+            div.italic.text-xs.bordered.my-1 #{pd.sum} hours
+
+            each day, shift in pd.dates
+                span.bordered
+                    span.bold.opacity-40.text-teal-500 #{shift}
+                    | #{day.month}/#{day.day}
+            hr
+            - var i = i + 1

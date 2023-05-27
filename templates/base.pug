@@ -1,0 +1,22 @@
+!!! 5
+html
+
+    head
+        block title
+        include includes/stylesheets
+        script(src="/static/js/hyperscript.min.js")
+        script(src="/static/js/htmx.min.js")
+        block styles
+        // favicon
+        link(rel="icon" href="/static/favicon.ico" type="image/x-icon")
+
+    body
+        include includes/tailwind
+        include includes/iconify
+        include includes/header
+        include mixins/button
+
+        block content
+
+    footer
+        include includes/footer

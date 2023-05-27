@@ -1,0 +1,30 @@
+extends base
+// {% load tags %}
+
+block content
+
+    .p-7
+        a(href='../../')
+            iconify-icon(icon="mdi:chevron-left")
+            | Schedule Overview
+
+        h1.text-3xl Schedule #{version.schedule.year}:#{version.schedule.num}(v#{version.num})
+        h2.text-xl.text-blue-300 Unfavorable Slots
+
+        each week in week_values
+            details.bordered
+                summary
+                    .text-lg.text-blue-300 Week #{week}
+                .flex.flex-wrap
+                    each workday in version.workdays.all
+                        each uf in unfavorables
+                            if uf.workday == workday
+                                .bordered
+                                    a(href=uf.workday.url)= workday.date
+                                    div= uf.employee
+                                    div= uf.shift
+
+        .bordered
+            each employee in employees
+                div #{employee}
+                div.text-xs COUNT: #{employee.n_unfavorables}

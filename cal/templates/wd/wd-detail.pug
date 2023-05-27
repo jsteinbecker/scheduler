@@ -1,0 +1,52 @@
+extends base
+// {% load tags %}
+
+block title
+    title DAY | #{workday.date} v#{workday.version.num}
+
+block styles
+    style.
+        td {border-right: 1px solid #8ccde255; border-bottom: 1px solid #8ccde255;}
+        .xxxs {font-size: 0.5em;}
+
+block content
+
+    .m-4
+
+        a(href='../../')
+            iconify-icon(icon="mdi:chevron-left")
+            | Schedule Version
+
+        .flexrow
+            a.italic(href=workday.get_previous_url())
+                iconify-icon(icon="mdi:chevron-left")
+                | Previous
+            h1.text-3xl= workday.date
+            a.italic(href=workday.get_next_url())
+                | Next
+                iconify-icon(icon="mdi:chevron-right")
+
+        table.bordered
+            tbody
+                tr
+                    td Weekday
+                    td Schedule Day
+                    td Week ID
+                    td Period ID
+                tr
+                    td= workday.weekday
+                    td= workday.sd_id
+                    td= workday.wk_id
+                    td= workday.prd_id
+
+        each slot in workday.slots.all
+            a(href="slot/#{slot.shift}/")
+                .bordered
+                    div
+                        span.bold= slot.shift.name
+                        if slot.template_employee
+                            iconify-icon(icon="mdi:map" title="This slot is typically filled by a templated employee.")
+                        if slot.employee
+                            .thin= slot.employee
+                        else
+                            iconify-icon.text-amber-300(icon="carbon:warning-alt" title="Unfilled")

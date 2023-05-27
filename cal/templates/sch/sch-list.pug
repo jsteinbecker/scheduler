@@ -1,0 +1,53 @@
+extends base
+// {% load tags %}
+
+block title
+    title All Schedules (#{schedules.first.department.name})
+
+block styles
+    style.
+        .subheading {color: #2c8eaf; font-weight: 200;}
+        .card-head {padding: 20px; background-color: #2c8eaf44; border-radius: 6px 6px 0 0;}
+        .card-body {padding: 20px; border-radius: 0 0 6px 6px;}
+        .card {border: 1px solid #ffffff77; margin-bottom: 20px; width: fit-content; border-radius: 6px; width: 250px;}
+
+        .card-dashed {border: 1px dashed #ffffff77; margin-bottom: 20px; width: fit-content; border-radius: 6px; width: 250px}
+        .card-dashed-head {padding: 20px; border-radius: 6px 6px 0 0;}
+        .card-dashed-body {padding: 20px; border-radius: 0 0 6px 6px;}
+
+        .card-dashed:hover {border: 1px dashed #ffffffaa; background-color: #ffffff11;}
+
+        .wrap {display: flex; flex-wrap: wrap;}
+        .mx-25 {margin: 0 25%;}
+block content
+
+    .m-10
+
+        a(href='../')
+            iconify-icon(icon="ic:round-chevron-left")
+            | Department Home
+        hgroup
+            h1.text-3xl.text-teal-500.font-bold Schedules
+            h3.text-lg.font-thin.text-teal-100 #{schedules.count} department schedules
+            hr
+
+        .flexrow.wrap.mx-20.my-2
+            each schedule in schedules
+                a(href="#{schedule.slug}/")
+                    .card
+                        .card-head
+                            .card-title
+                                | {% icon "Template" %}
+                                .sm= schedule.status
+                        .card-body
+                            .bold #{schedule.year} Schedule ##{schedule.num}
+                            .sm= schedule.start_date
+
+            a(href='new/')
+                .card-dashed
+                    .card-dashed-head
+                        .card-title
+                            iconify-icon(icon="material-symbols:tab-new-right-outline-rounded")
+                    .card-dashed-body
+                            .bold Create new
+                            .sm Schedule

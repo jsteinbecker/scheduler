@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "tailwindcss": "^3.3.2"
+  },
+  "devDependencies": {
+    "unocss": "^0.52.3"
+  }
+}

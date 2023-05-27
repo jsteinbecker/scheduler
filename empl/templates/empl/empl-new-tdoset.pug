@@ -1,0 +1,51 @@
+
+extends base
+
+mixin weekHeader(weekday)
+    div.font-bold.text-xs= weekday
+        div
+            span.btn All
+            span.btn None
+
+
+block title
+    title #{employee} | TEMPLATE DAYS OFF
+
+block styles
+    style.
+        .grid-cols-7 { display: grid; grid-template-columns: repeat(7, 1fr); justify-content: space-evenly;}
+        .px40 { padding: 0px 40px; }
+        .btn { border: 1px solid #ccc; border-radius: 4px; padding: 4px 8px; margin: 4px; font-size: 8px;}
+        .btn:hover { background-color: #eee; color: #222; }
+
+block content
+
+    .m-10
+
+        a(href='../')
+            iconify-icon(icon="mdi:chevron-left")
+            | Employee Page
+
+        hgroup
+            h1.text-2xl= employee
+            h2.text-xl.font-bold Creating New Templated Day Off Set
+
+            hr
+
+
+        form.px40(method="post")
+            input(type="hidden" name="csrfmiddlewaretoken" value=csrf_token)
+            | #{formset.management_form}
+
+            .grid-cols-7
+                +weekHeader('Sun')
+                +weekHeader('Mon')
+                +weekHeader('Tue')
+                +weekHeader('Wed')
+                +weekHeader('Thu')
+                +weekHeader('Fri')
+                +weekHeader('Sat')
+                each day in day_range
+                    .grid-cell
+                        input(type="checkbox" name="form-day" value=day)
+            input(type="submit" value="Submit")

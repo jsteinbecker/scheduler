@@ -1,0 +1,60 @@
+//- TEMPLATE <EMPL-DETAIL>
+extends base
+
+block styles
+    style.
+        h1 {margin-bottom: 0px; padding-bottom: 0px;}
+        .available {color: #b7e28c; font-size: 10px;}
+        .unavailable {color: #e28c8c; font-size: 10px;}
+        .dx-header {font-size: 20px; font-weight: 200; color: #4fb2d3aa; bottom: 22px;}
+        .px2 {padding-left: 4px; padding-right: 4px;}
+        .flexrow {display: flex; justify-content: start; align-items: flex-start;}
+        .nobreak {white-space: nowrap;}
+        .xxs {font-size: 10px; color: #999;}
+block content
+    a(href="../../")
+        iconify-icon(icon="mdi:chevron-left")
+        | #{employee.department.full_name}
+
+
+    h1= employee
+    .dx-header EMPLOYEE
+
+    hr
+
+
+    table
+        tr
+            td Shifts Trained
+            td
+        each shift in employee.trainings.all
+            tr
+                td
+                    a(href='#{shift.shift.url}')= shift.shift.name
+                td
+                    if shift.is_available
+                        span.available AVAILABLE
+                    else
+                        span.unavailable UNAVAILABLE
+
+    a(href='new-tdoset/')
+        button New Template Day Off Set
+
+    if employee.templated_day_off_sets.exists
+        each tdoset in employee.templated_day_off_sets.all
+            .tdo
+                a(href="tdoset/#{tdoset.effective_date}/") TDOSET days=
+                    span= tdoset.day_list
+
+    if template_set != None
+        .flexrow
+            a(href="template-set/new/") Template Set
+            each template in template_set.templates.all
+                .bordered
+                    .nobreak
+                        .bold= template.shift.name
+                            sub.xxs.thin DAY #{template.sd_id}
+    else
+        a(href="template-set/new/") Create Template Set
+
+

@@ -1,0 +1,44 @@
+extends base
+
+block title
+    title #{department} | DEPARTMENT
+
+block styles
+    style.
+        .xs {font-size: 0.7rem;}
+        .op50 {opacity: 0.5; padding-left: 0.5rem;}
+
+
+block content
+
+    .m-10
+        a(href="../../")
+            iconify-icon(icon="mdi:chevron-left")
+            | #{department.organization.name}
+
+        h1= department
+        h2= department.full_name
+        hr
+
+
+        .flexrow.px-40
+            div
+                h3.text-xl Shifts
+                each shift in department.shifts.all
+                    .bordered
+                        a(href='shift/#{shift.slug}')= shift.name
+                        .xs
+                            | #{shift.start_time}
+                            span.op50 (#{shift.hours} hours)
+            div
+                h3.text-xl Schedules
+                a(href='sch/')
+                    | Manage Schedules
+                    iconify-icon(icon="mdi:chevron-right")
+            div
+                h3.text-xl Employees
+                each employee in department.employees.active
+                    .bordered
+                        a(href='empl/#{employee.slug}/')= employee
+                        span
+                            sub #{employee.title}

@@ -1,0 +1,15 @@
+mixin card(title, description, img_src, img_alt, link)
+    article.group.w-64.img-scale
+        a(href="#{link}")
+              img.h-56.w-full.rounded-xl.object-cover.shadow-xl.transition.img-scale(
+                  style="background-color:#00000044;"
+                  class="hover:img-scale hover:bordered"
+                  alt="#{img_alt}"
+                  src="#{img_src}")
+              div.p-4
+                    h3.text-lg.font-medium.text-gray-100 #{title}
+                    p.mt-2.line-clamp-3.text-sm.relaxed.text-gray-300 #{description}
+
+.card-group
+    +card("Organization", "Manage your organization's information.", "/static/img/flowrate-logo-v0.4.png", "Pharmacy", "/org/")
+    +card("Schedule", "Manage your organization's schedule.", "/static/img/schedule.png", "Pharmacy", "#")

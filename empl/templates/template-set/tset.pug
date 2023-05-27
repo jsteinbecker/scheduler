@@ -1,0 +1,36 @@
+extends base
+from empl.tags import icon
+
+block styles
+    style.
+        td {border-right: 1px solid #8ccde255; border-bottom: 1px solid #8ccde255;}
+        .grid-cols-7 {display: grid; grid-template-columns: repeat(7, 1fr); grid-gap: 1px; border: 1px solid #8ccde255;}
+
+block content
+
+    a(href="../")
+        iconify-icon(icon="mdi:chevron-left")
+        | Back
+
+
+    h1= employee
+
+    a.bordered.p-1.text-xs(href='swap/')
+        if employee.template_size == 2
+            | Swap Template Pattern to 3-Week
+        else
+            | Swap Template Pattern to 2-Week
+
+
+    form(method='POST')
+        input(type='hidden' name='csrfmiddlewaretoken' value=csrf_token)
+        .grid-cols-7
+            each day in days
+                - var id = day['sd_id']
+                .bordered
+                    .bold= id
+                    select(name="sft-#{id}")
+                        option(value="") ---
+                        each sft in day.shifts
+                            option(value=sft.slug)= sft
+        input(type="submit" value="Save")

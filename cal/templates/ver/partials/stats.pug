@@ -1,0 +1,26 @@
+h2.text-xl Stats
+
+div.flex.flex-row
+    iconify-icon.pr-2(icon="mdi:account-multiple")
+    .font-light Best Version?:
+    .font-bold= version.is_best
+
+div.flex.flex-row
+    iconify-icon.pr-2(icon="uim:sync-exclamation")
+    .font-light No. of One-Offs:
+    .font-bold= version.n_disliked_one_offs
+
+div.flex.flex-row
+    iconify-icon.pr-2(icon="mdi:account-question")
+    .font-light No. of Unfilled Slots:
+    .font-bold= version.n_empty
+
+div.flex.flex-row
+    iconify-icon.pr-2(icon="mdi:account-check")
+    .font-light No. of Unfavorables:
+    .font-bold= version.n_unfavorables
+
+div.flex.flex-row
+    iconify-icon.pr-2(icon="mdi:alert-circle")
+    .font-light No. of PTO Conflicts:
+    .font-bold= n_pto_conflicts.count

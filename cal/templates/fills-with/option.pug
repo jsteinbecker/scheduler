@@ -1,0 +1,60 @@
+mixin fill-button(option)
+    a.bg-zinc-800.px-2.rounded.text-zinc-200.mx-1(
+        href="assign/#{option}/"
+        class="hover:bg-zinc-700 hover:ring")
+            | Assign
+            iconify-icon(icon="mdi:account-check")
+
+dialog#option-explorer
+        h3.text-2xl.text-white #{slot.shift} #{slot.date}
+        h2.text-xl.text-teal-200.font-bold Option Explorer
+
+        table.rounded-lg.bg-gray-100.bg-opacity-25
+            tr.text-zinc-300
+                th Employee
+                th Week
+                th /Needed
+                th Period
+                th /Needed
+                th Actions
+            each option in fills_with.all
+                tr(data-checks-ok=option.checks_ok)
+
+                    td= option.employee
+
+                    - var wk_fte = option.employee.fte * 40
+                    if option.hours_in_week > wk_fte
+                        td.red= option.hours_in_week
+                    else
+                        td #{option.hours_in_week}hrs
+
+                    td #{option.hours_needed_in_week}hrs
+
+                    - var pd_fte = option.employee.fte * 80
+                    if option.hours_in_period > pd_fte
+                        td.red #{option.hours_in_period}hrs
+                    else
+                        td #{option.hours_in_period}hrs
+
+                    td #{option.hours_needed_in_period}hrs
+
+                    td
+                        if option.checks_ok
+                            +fill-button(option.employee.slug)
+
+                        else
+                            if option.exceeds_period_fte
+                                iconify-icon.iconify(data-icon="fluent:calendar-week-start-20-regular")
+                            if option.exceeds_week_fte
+                                iconify-icon.iconify(data-icon="ci:calendar-week")
+                            if option.other_on_day
+                                iconify-icon.iconifty(data-icon="bi:calendar-check" color="black")
+                            if option.other_on_conflicting
+                                iconify-icon.iconifty(data-icon="ic:twotone-u-turn-right")
+
+
+
+script.
+    document.querySelectorAll('tr[data-checks-ok="False"]').forEach(function(e) {
+        e.classList.add('op25');
+    });

@@ -1,0 +1,25 @@
+extends base
+
+block content
+
+    .m-4
+        hgroup
+            h1.text-3xl.font-bold.text-teal-300= organization
+            h2.font-light.text-teal-500= organization.full_name
+            hr
+
+        h3.text-xl.my-2 Departments
+
+        .text-xs #{departments.count} departments
+
+        .flexrow.wrap
+            each dept in departments
+                .w-64.h-56.bordered(style="background-image: url(#{dept.image_url}); background-size: cover; background-position: center;")
+                    a(href='dept/#{dept.slug}/')
+                        h3.bold(style="color: black; font-size: 2.3rem;")
+                            | #{dept.name}
+                    a(href='/admin/org/department/#{dept.id}/change/') Admin
+
+                    div.xs #{dept.employees.count} employees
+                    div.xs #{dept.shifts.count} shifts
+

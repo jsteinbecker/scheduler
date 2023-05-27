@@ -1,0 +1,33 @@
+extends base
+block styles
+    style.
+        .grid-cols-7 { display: grid; grid-template-columns: repeat(7, 1fr); justify-content: space-evenly; align-content: space-evenly;}
+        .px40 { padding: 0px 40px; }
+        .btn { border: 1px solid #ccc; border-radius: 4px; padding: 4px 8px; margin: 4px; font-size: 8px;}
+        .btn:hover { background-color: #eee; color: #222; }
+        .op25 { opacity: 0.25; }
+block content
+
+    a(href="../../")
+        iconify-icon(icon="mdi:chevron-left")
+        | Back
+
+    h1= employee
+
+    hr
+
+    .grid-cols-7
+        div Sun
+        div Mon
+        div Tue
+        div Wed
+        div Thu
+        div Fri
+        div Sat
+        each day in tdoset.days
+            if day == 'F'
+                iconify-icon.op25(icon="mdi:calendar-blank")
+            else
+                iconify-icon(icon="mdi:calendar-blank")
+
+

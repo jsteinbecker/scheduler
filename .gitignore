@@ -1,0 +1,4 @@
+staticfiles/**/*.py
+/node_modules/
+/staticfiles/
+.env
