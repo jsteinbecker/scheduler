@@ -137,11 +137,16 @@ select {
 }
 
 dialog {
-    background-color: #292e3a;
+    background-color: #5b5b5b;
+    color: #edf0f5;
     border-radius: 9px;
     border: 1px solid #292e3a;
     padding: 1rem;
     backdrop-filter: drop-shadow(0px 3px 10px #000000);
+}
+
+dialog > * {
+    color: #cddfee;
 }
 
 nav.nav-top {

@@ -1,0 +1,22 @@
+block mixins
+    mixin actionButton(name, icon, link, cls)
+        a.dark-btn.text-xs(href=link class=cls)
+            | #{name}
+            iconify-icon.text-lg(icon="#{icon}")
+
+    mixin solveButton(name)
+        a.dark-btn.text-xs(class="bg-gray-700" onclick="document.getElementById('solve-dialog').showModal();")
+            | #{name}
+            iconify-icon.text-lg(icon="mdi:cogs")
+
+// {% load tags %}
+
+
+.flexrow.w-fit.center-self.mb-2
+    +actionButton("ASSIGN TEMPLATE SLOTS", "mdi:calendar-blank", "actions/assign-templates/", "bg-blue-500")
+    +actionButton("ASSIGN GENERIC TEMPLATES", "tabler:atom", "actions/assign-generics/", "bg-indigo-500")
+    +actionButton("RESET", "fluent:eraser-20-filled", "actions/reset/", "bg-gray-700")
+    +actionButton("REBALANCE", "emojione-monotone:balance-scale", "#", "bg-gray-700")
+    +solveButton("SOLVE")
+    if version.n_disliked_one_offs > 10
+        +actionButton("RETRY ONE OFF ASSIGNMENTS", "mdi:sync-alert", "actions/retry-one-offs/", "bg-gray-700")

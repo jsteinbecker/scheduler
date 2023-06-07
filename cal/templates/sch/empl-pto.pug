@@ -15,14 +15,22 @@ block content
 
 
         h3.text-lg.font-thin.mt-3.ml-2.px-2= month
+
         .m-4.grid.grid-cols-7.gap-2.w-fit
+
             - var weekdays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
             each weekday in weekdays
-                div.text-center.bg-gray-200.rounded-lg.px-2.py-1.text-xs.bg-opacity-10= weekday
+                div.text-center.bg-gray-200.rounded-lg.px-2.py-1.text-xs.bg-opacity-10 #{weekday}
+
+
             each workday in schedule_days
                 div(data-date="#{workday.sd_id}" hx-get="#{workday.date}/" hx-trigger="load")
 
         .hidden(data-tdos="#{tdo_days}")
+
+
+
+
 
 
 

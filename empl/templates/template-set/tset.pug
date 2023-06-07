@@ -1,36 +1,29 @@
-extends base
-from empl.tags import icon
+mixin available()
+    .bg-green-800.bg-opacity-50.rounded-full.border.border-emerald-400.border-2.text-center.w-6.h-6
 
-block styles
-    style.
-        td {border-right: 1px solid #8ccde255; border-bottom: 1px solid #8ccde255;}
-        .grid-cols-7 {display: grid; grid-template-columns: repeat(7, 1fr); grid-gap: 1px; border: 1px solid #8ccde255;}
+mixin generic()
+    .bg-purple-800.bg-opacity-50.rounded-full.border.border-indigo-400.border-2.text-center.w-6.h-6
+        iconify-icon.text-purple-200(icon="material-symbols:magic-exchange-rounded")
 
-block content
+mixin distinct()
+    .bg-sky-800.bg-opacity-50.rounded-full.border.border-teal-400.border-2.text-center.w-6.h-6
+        iconify-icon.text-sky-200(icon="mdi:shield-key")
 
-    a(href="../")
-        iconify-icon(icon="mdi:chevron-left")
-        | Back
+mixin tdo()
+    .bg-yellow-600.bg-opacity-50.rounded-full.border.border-amber-400.border-2.text-center.w-6.h-6
+        iconify-icon.text-amber-200(icon="carbon:palm-tree")
 
-
-    h1= employee
-
-    a.bordered.p-1.text-xs(href='swap/')
-        if employee.template_size == 2
-            | Swap Template Pattern to 3-Week
-        else
-            | Swap Template Pattern to 2-Week
-
-
-    form(method='POST')
-        input(type='hidden' name='csrfmiddlewaretoken' value=csrf_token)
-        .grid-cols-7
-            each day in days
-                - var id = day['sd_id']
-                .bordered
-                    .bold= id
-                    select(name="sft-#{id}")
-                        option(value="") ---
-                        each sft in day.shifts
-                            option(value=sft.slug)= sft
-        input(type="submit" value="Save")
+.rounded.w-fit.bordered.pb-2.shadow-lg
+    h3.text-center.text-white.text-2xl.p-2.bg-black.bg-opacity-50.rounded-t
+        | Template Set
+    .grid.grid-cols-7.m-2.p-2.gap-1
+        each template in template_set.day_templates.all
+            if template.state == 'G'
+                +generic()
+            if template.state == 'D'
+                +distinct()
+            if template.state == 'T'
+                +tdo()
+            if template.state == 'A'
+                +available()
+    a.text-xs.bordered.m-2(href="template-set/") Manage

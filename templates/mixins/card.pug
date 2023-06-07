@@ -1,15 +1,52 @@
-mixin card(title, description, img_src, img_alt, link)
-    article.group.w-64.img-scale
-        a(href="#{link}")
-              img.h-56.w-full.rounded-xl.object-cover.shadow-xl.transition.img-scale(
-                  style="background-color:#00000044;"
-                  class="hover:img-scale hover:bordered"
-                  alt="#{img_alt}"
-                  src="#{img_src}")
-              div.p-4
-                    h3.text-lg.font-medium.text-gray-100 #{title}
-                    p.mt-2.line-clamp-3.text-sm.relaxed.text-gray-300 #{description}
+mixin card(link, img_src, img_alt, title, description, inst, inst_full)
+
+    article.group.w-64.img-scale(class="hover:drop-shadow-2xl hover:-translate-y-1 hover:scale-110 transition-all duration-500 ease-in-out")
+
+        a(href=link)
+            .relative.mx-auto.max-w-md.overflow-hidden.rounded-lg.bg-zinc-800.shadow
+                div(class="hover:scale-125 transition-all")
+                    img.w-full.object-cover(src="#{img_src}" alt="#{img_alt}")
+
+                div.absolute.inset-0.z-10.bg-gradient-to-t.from-black
+
+                div.absolute.inset-x-0.bottom-0.z-20.p-4
+                    p.mb-1.text-sm.text-white.text-opacity-80
+                        | #{img_alt} •
+                        time #{inst_full}
+
+                    h3.text-xl.font-medium.text-white= title
+
+                    p.mt-1.text-white.text-opacity-80.text-xs= description
+
+
 
 .card-group
-    +card("Organization", "Manage your organization's information.", "/static/img/flowrate-logo-v0.4.png", "Pharmacy", "/org/")
-    +card("Schedule", "Manage your organization's schedule.", "/static/img/schedule.png", "Pharmacy", "#")
+
+    - var title = "Organization"
+    - var description = "Manage your organization's information."
+    - var img_src = "/static/img/flowrate-logo-v0.4.png"
+    - var img_alt = "Pharmacy"
+    - var link = "/org/"
+
+    +card(link, img_src, img_alt, title, description, inst, inst_full)
+
+    - var title = "Organization Admin"
+    - var description = "Manage Employees, Departments, and Schedule Structures for the application to utilize."
+    - var img_src = "/static/img/schedule.png"
+    - var img_alt = "Pharmacy"
+    - var link = "#"
+
+    +card(link, img_src, img_alt, title, description)
+
+    - var title = "Employees"
+    - var description = "Manage your organization's employees"
+    - var img_src = "/static/img/employees.png"
+    - var img_alt = "Employees"
+    - var link = "#"
+
+    +card(link, img_src, img_alt, title, description)
+
+
+
+
+

@@ -1,4 +1,5 @@
 extends base
+// {% load tags %}
 
 block title
     title ##{schedule.num}, #{schedule.year} | SCHEDULE
@@ -28,7 +29,7 @@ block content
 
         hr
 
-        .bg-red-100.text-red-400.text-xs.px-1.w-fit.rounded.cursor-pointer(_="install DeleteButton" class="hover:bg-red-200 hover:bg-opacity-25")
+        .float-right.bg-red-100.text-red-400.text-xs.px-1.w-fit.rounded.cursor-pointer(_="install DeleteButton" class="hover:bg-red-200 hover:bg-opacity-25")
             iconify-icon.red(icon="mdi:delete" @inline="true")
             | Delete Schedule
 
@@ -43,17 +44,35 @@ block content
                     h3.thin
                         | Version #{version.num} (#{version.get_status_display})
 
-            a.bordered.dashed(href="v/new/" class="hover:bg-zinc-100 hover:bg-opacity-25")
-                iconify-icon(icon="mdi:calendar-plus")
-                p.text-xs.px-4 CREATE NEW
+            a.bordered.dashed(
+                href="v/new/"
+                _="on click toggle .hidden on .iconify in me then put 'CREATING...' into <p/> in me"
+                class="hover:bg-zinc-100 hover:bg-opacity-25")
+                    iconify-icon.iconify.text-lg(icon="mdi:calendar-plus")
+                    iconify-icon.iconify.text-lg.hidden.text-amber-300(icon="svg-spinners:clock")
+                    p.text-xs.px-4
+                        | CREATE NEW
 
         .flex.flex-row.bordered
             .bg-zinc-100.text-zinc-900.rounded-sm.px-1.w-fit.m-2.text-center
-                .text-3xl.font-thin.mt-3 #{schedule.pto_list.count} <br/>
-                |PTO Requests
-            .grid.grid-cols-3.m-1
+                .text-3xl.font-thin.mt-3
+                | #{schedule.pto_requests.count} <br/>
+                | PTO Requests
+
+            .grid.grid-cols-3
                 each employee in employees
-                    a.text-xs(href="edit-pto/#{employee.slug}")
-                        | #{employee}
-                        span.bg-zinc-100.text-black.rounded-sm.ml-1.px-1(hx-get="data/emp-n-pto/#{employee.slug}/" hx-trigger="load")
+                    a.bordered.text-xs(class="w-1/1"
+                        href="edit-pto/#{employee.slug}/")
+                            | #{employee}
+                            span.bg-zinc-100.text-black.rounded-sm.ml-1.px-1(
+                                hx-get="data/emp-n-pto/#{employee.slug}/"
+                                hx-trigger="load")
+
+        .flex.flex-row.bordered
+            a.bg-zinc-100.text-zinc-900.rounded-sm.px-1.w-fit.m-2.text-center(
+                href="prn-employees/")
+                .text-xl.font-thin.mt-3
+                    | #{schedule.employees.prn.count} <br/>
+                    | PRN Employees
+
 

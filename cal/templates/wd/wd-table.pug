@@ -1,0 +1,16 @@
+
+
+.grid.grid-flow-row-dense(class="grid-cols-#{shifts.count() + 3} gap-2 w-2/7")
+        div.col-span-3 EMPLOYEE
+        each shift in shifts
+            div.shrink= shift
+
+        each employee in employees
+            div.col-span-3.text-xs= employee
+            each shift in shifts
+                - var fw = employee.fills_with.filter(slot__shift__slug=shift.slug, slot__workday=workday)
+                if fw.exists == true
+                    div.shrink
+                        iconify-icon(icon="icon-park-solid:add-one" class="text-emerald-200")
+                else
+                    div.shrink

@@ -1,0 +1,48 @@
+extends base
+
+// TEMPLATE
+// EMPL-NEW-TEMPLATE-SET
+block content
+
+    .m-10
+
+        a(href="../")
+            iconify-icon(icon="mdi:chevron-left")
+            span.text-xs BACK TO EMPLOYEE
+
+        hgroup
+            h1.text-3xl= employee
+            h2.text-xl.font-bold New Day Templating Set
+            hr
+
+        include ../template-set/switch-template-size-btn
+
+        form(method="POST", action="delete/")
+
+            input(type="hidden"
+                name="csrfmiddlewaretoken" value=csrf_token)
+
+            button(type="submit"
+                class="float-right bg-gray-200 bordered bg-opacity-25 hover:bg-red-400 text-white font-bold py-2 px-4 rounded")
+                iconify-icon(icon="mdi:trash-can")
+                span.text-xs.font-thin DELETE
+
+        .grid.grid-cols-7
+
+            each template in template_set.day_templates.all
+
+                if template.primary_cycle
+
+                    div.bordered
+                        a.cursor-pointer.select-none(
+                            hx-get="#{template.sd_id}/change/"
+                            hx-trigger="click"
+                            hx-target="#target-#{template.sd_id}")
+                                span.text-xs CHANGE TYPE
+                                iconify-icon(icon="mdi:chevron-right")
+
+                        div(id="target-#{template.sd_id}"
+                            hx-get="#{template.sd_id}/"
+                            hx-trigger="load") Loading...
+
+

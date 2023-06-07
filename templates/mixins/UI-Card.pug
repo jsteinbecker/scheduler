@@ -1,0 +1,17 @@
+article.group.w-64.img-scale
+        a(href=card.link)
+            .relative.mx-auto.max-w-md.overflow-hidden.rounded-lg.bg-white.shadow
+
+                .image
+                    img.w-full.object-cover(
+                        src="#{card.img_src}"
+                        alt="#{card.img_alt}")
+
+                .absolute.inset-0.z-10.bg-gradient-to-t.from-black
+                .absolute.inset-x-0.bottom-0.z-20.p-4
+                    p.mb-1.text-sm.text-white.text-opacity-80
+                        | #{card.img_alt} •
+                        time #{card.inst_full}
+                    h3.text-xl.font-medium.text-white= card.title
+                    p.mt-1.text-white.text-opacity-80= card.description
+

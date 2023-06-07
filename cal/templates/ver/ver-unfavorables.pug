@@ -17,14 +17,21 @@ block content
                     .text-lg.text-blue-300 Week #{week}
                 .flex.flex-wrap
                     each workday in version.workdays.all
-                        each uf in unfavorables
-                            if uf.workday == workday
-                                .bordered
-                                    a(href=uf.workday.url)= workday.date
-                                    div= uf.employee
-                                    div= uf.shift
+                        each empl in workday.slots.employees.all
+                            each uf in unfavorables
+                                if uf.workday == workday
+
+                                        if uf.employee == empl
+                                            .bordered
+                                                .flex.flex-col
+                                                    if uf.workday.wk_id == week
+
+                                                        a(href=uf.workday.url)= workday.date
+                                                        div= uf.employee
+                                                        div= uf.shift
 
         .bordered
             each employee in employees
                 div #{employee}
-                div.text-xs COUNT: #{employee.n_unfavorables}
+                div.text-xs.opacity-75 COUNT: #{employee.n_unfavorables}
+                hr.my-1

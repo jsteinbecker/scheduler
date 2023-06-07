@@ -8,9 +8,24 @@ block content
             | Back
         h1= emp
 
+        h2= version.schedule
+        .grid.grid-cols-7.border.rounded-sm.p-2(class="w-3/12 gap-2 mt-2")
+            each wd in workdays
+                div.h-10.w-10.border.rounded.text-center.pt-2
+                    - var isNotShift =  wd in ['PTO', 'TDO', '.']
+                    if isNotShift
+                        if wd == 'PTO'
+                            .text-indigo-500.font-bold PTO
+                        if wd == 'TDO'
+                            .text-teal-600.font-bold TDO
+                        if wd == '.'
+                            iconify-icon.text-gray-700.font-thin(icon="mdi:calendar-blank")
+                    else
+                        .font-bold= wd
+
         - var i = 1
 
-        each prd in prds
+        each prd in periods
             div.font-thin.text-xl.mt-4 PAY PERIOD #{i}
             - var pd = prd[0]
             div.italic.text-xs.bordered.my-1 #{pd.sum} hours
@@ -21,3 +36,4 @@ block content
                     | #{day.month}/#{day.day}
             hr
             - var i = i + 1
+

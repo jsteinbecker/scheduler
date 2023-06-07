@@ -7,7 +7,6 @@ block title
 block styles
     style.
         td {border-right: 1px solid #8ccde255; border-bottom: 1px solid #8ccde255;}
-        .xxxs {font-size: 0.5em;}
 
 block content
 
@@ -39,14 +38,30 @@ block content
                     td= workday.wk_id
                     td= workday.prd_id
 
-        each slot in workday.slots.all
+        hr
+        .flex.flex-row.flex-wrap
+            each pto_req in pto_reqs
+                .px-2.text-xs.my-1
+                    span.opacity-90.font-bold.p-1 PTO
+                    span.opacity-50 #{pto_req.employee__first_name} #{pto_req.employee__last_name}
+        hr
+
+        - var pto_slugs = pto_reqs.values_list('employee__slug', flat=True)
+
+        each slot in workday_slots
             a(href="slot/#{slot.shift}/")
                 .bordered
                     div
                         span.bold= slot.shift.name
                         if slot.template_employee
-                            iconify-icon(icon="mdi:map" title="This slot is typically filled by a templated employee.")
+                            if slot.template_employee.slug in pto_slugs == true
+                                iconify-icon(icon="mdi:map" title="This slot is typically filled by a templated employee.")
+                            else
+                                iconify-icon.text-rose-200(icon="tabler:map-off" title="This slot is typically filled by a templated employee, but they are on PTO.")
                         if slot.employee
                             .thin= slot.employee
                         else
                             iconify-icon.text-amber-300(icon="carbon:warning-alt" title="Unfilled")
+
+        div.rounded-lg.p-2.border(hx-get='table/'
+            hx-trigger='load') LOADING TABLE

@@ -7,34 +7,39 @@ block styles
 
 
 block content
-    a(href="../../")
-        iconify-icon(icon="mdi:chevron-left")
-        | #{shift.department.name}
 
-    h1= shift.name
-    h2= shift.full_name
+    .m-10
+        a(href="../../")
+            iconify-icon(icon="mdi:chevron-left")
+            | #{shift.department.name} Department
 
-    .flexrow
-        div
-            table.bordered
-                tr
-                    td.sm.op50 Department
-                    td= shift.department
-                tr
-                    td.sm.op50 Start Time
-                    td= shift.start_time
-                tr
-                    td.sm.op50 Hours
-                    td #{shift.hours} hrs.
+        hgroup
+            h1.text-3xl.text-indigo-500.font-bold= shift.name
+            h2.text-xl.text-indigo-100.font-thin= shift.full_name
+            hr
 
-            table.bordered
-                thead
-                    tr= shift.get_weekdays_display
-        div
-            h3 Trained Employees
-            table.bordered
-                each emp in shift.trained.all
+        .flexrow
+            div
+                table.bordered
                     tr
-                        td.sm.op50= emp
-                        td
-                            button Remove
+                        td.sm.op50 Department
+                        td= shift.department
+                    tr
+                        td.sm.op50 Start Time
+                        td= shift.start_time
+                    tr
+                        td.sm.op50 Hours
+                        td #{shift.hours} hrs.
+
+                table.bordered
+                    thead
+                        tr= shift.get_weekdays_display
+            div
+                h3 Trained Employees
+                .bordered.p-1.rounded-sm
+                    each emp in shift.trained.all
+                        div.flex.flex-row
+                            div= emp
+                            a.sm.op50(href=f'/admin/empl/employee/{emp.pk}/change/')
+                                iconify-icon(icon="mdi:chevron-right")
+                                | View

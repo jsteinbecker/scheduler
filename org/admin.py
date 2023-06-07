@@ -1,84 +1,101 @@
 from django.contrib import admin
+from django.utils.safestring import mark_safe
+
 from .models import Organization, Department, Shift, Training, TimePhase, DepartmentNotification
+
+from grappelli.forms import GrappelliSortableHiddenMixin
+from grappelli.urls_docs import urlpatterns as grappelli_docs_urlpatterns
 
 from django import forms
 from .forms import ShiftForm
 
-class DeptNotificationInline(admin.StackedInline):
-    model = DepartmentNotification
-    extra = 0
-    readonly_fields = ['department',]
 
-class DepartmentInline(admin.TabularInline):
-    model = Department
-    fields = ['name','full_name','schedule_week_count','initial_start_date']
+class INLINES:
+    class DeptNotificationInline(admin.StackedInline):
+        model = DepartmentNotification
+        extra = 0
+        readonly_fields = ['department',]
 
-    show_change_link = True
-    extra = 0
 
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        return qs.filter(organization__in=request.user.organizations.all())
+    class DepartmentInline(admin.TabularInline):
+        model = Department
+        fields = ['name','full_name','schedule_week_count','initial_start_date']
+        show_change_link = True
+        extra = 0
+        classes = ['collapse']
 
-class UserLinkInline(admin.TabularInline):
-    model = Organization.linked_accounts.through
-    fields = ['user', ]
-    extra = 1
 
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        return qs.filter(organization__in=request.user.organizations.all())
 
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == 'organization':
-            kwargs['queryset'] = Organization.objects.filter(linked_accounts=request.user)
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+    class TimePhaseInlines(GrappelliSortableHiddenMixin, admin.TabularInline):
+        fields = ['name','full_name','max_time' ,'organization','position','position_display']
+        readonly_fields = ['organization','position_display']
+        model = TimePhase
+        extra = 0
+        sortable_field_name = "position"
+        verbose_name_plural = mark_safe('Time Phase Groups <br/> '
+                                        '<span style="font-size: 0.95em; color: #777; font-style:italic;">'
+                                        'Drag and drop to sort. Time phases are used to prevent employees from'
+                                        'being scheduled into turnarounds.'
+                                        '</span>')
 
-    # make assigned links readonly while leaving the new ones editable
-    def get_readonly_fields(self, request, obj=None):
-        if obj:
-            return ['user', ]
-        else:
-            return []
+        def position_display(self, obj):
+            if obj.position == 0:
+                return '1st'
+            elif obj.position == 1:
+                return '2nd'
+            elif obj.position == 2:
+                return '3rd'
+            else:
+                return f'{obj.position}th'
 
-class TimePhaseInlines(admin.TabularInline):
-    fields = ['name','full_name','max_hour','organization']
-    readonly_fields = ['organization']
-    model = TimePhase
-    extra = 0
+        position_display.short_description = 'Position'
+
+
+
+
 
 
 @admin.register(Organization)
 class OrgAdmin(admin.ModelAdmin):
-    fields = ['name','full_name','all_departments']
+
+    fields = ['name','full_name',]
     list_display = ['name','full_name','all_departments']
     list_editable = ['full_name']
     readonly_fields = ['all_departments']
-    inlines = [TimePhaseInlines, UserLinkInline, DepartmentInline,]
+    inlines = [
+        INLINES.TimePhaseInlines,
+        INLINES.DepartmentInline,
+    ]
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        return qs.filter(linked_accounts=request.user)
+        return qs.filter(departments__employees=request.user.profile)
 
     def all_departments(self, obj):
-        return str(list(obj.departments.all().values_list('name',flat=True)))
+        return " ✦ ".join(list(obj.departments.all().values_list('name',flat=True)))
 
 from empl.models import Employee
+
+
 class EmployeeInlines(admin.StackedInline):
     model = Employee
-    fields = ['first_name','last_name','department','active','phase_pref', 'fte',]
-    readonly_fields = ['department']
+    radio_fields = {'phase_pref': admin.HORIZONTAL}
+    fieldsets = (
+        (None, {'fields': ('first_name','last_name','department','active','phase_pref', 'fte',)}),
+    )
+    readonly_fields = ['department','active']
     show_change_link = True
     extra = 0
-
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        return qs.filter(department__organization__in=request.user.organizations.all())
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'department':
             kwargs['queryset'] = Department.objects.filter(organization__in=request.user.organizations.all())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def get_formset(self, request, obj=None, **kwargs):
+        formset = super().get_formset(request, obj, **kwargs)
+        formset.form.base_fields['phase_pref'].widget.attrs['class'] = 'form-row'
+        return formset
 
 class ShiftInlines(admin.TabularInline):
     model = Shift
@@ -88,9 +105,6 @@ class ShiftInlines(admin.TabularInline):
     show_change_link = True
     show_full_result_count = True
 
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        return qs.filter(department__organization__in=request.user.organizations.all())
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'department':
@@ -101,26 +115,34 @@ class ShiftInlines(admin.TabularInline):
 class DeptAdmin(admin.ModelAdmin):
 
     fields = ['name','full_name','organization',
-              'template_week_count_part_time',
-              'template_week_count_full_time',
               'schedule_week_count','initial_start_date','image_url']
     readonly_fields = ['shifts']
     list_display = ['__str__','full_name','organization','schedule_week_count','initial_start_date']
     list_editable = ['full_name','schedule_week_count','initial_start_date']
-    inlines = [DeptNotificationInline, EmployeeInlines, ShiftInlines,]
+    inlines = [
+        EmployeeInlines,
+        ShiftInlines,
+    ]
 
 @admin.register(TimePhase)
 class TimePhaseAdmin(admin.ModelAdmin):
 
     def timeframe(self, obj):
-        return f"until {obj.max_hour}:00"
+        return f"until {obj.max_time.strftime('%H:%M')}"
 
     def shifts(self, obj):
         return ", ".join(list(obj.shifts.all().values_list('name',flat=True)))
 
-    fields = ['organization','name','full_name','max_hour',]
+    def get_rank(self, obj):
+        return obj.position + 1
+
+    fields = ['organization','name','full_name','max_time','position',]
+    sortable_by = ['max_time']
     list_display = ['name','full_name','timeframe','shifts']
     readonly_fields = ['shifts']
+    inlines = [ShiftInlines,]
+
+
 
 
 
@@ -128,10 +150,6 @@ class TrainingInline(admin.TabularInline):
     model = Training
     fields = ['employee','shift','is_available', 'sentiment_qual', 'sentiment_quant']
     extra = 1
-
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        return qs.filter(employee__department__organization__linked_accounts=request.user)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'employee':
@@ -155,18 +173,6 @@ class ShiftAdmin(admin.ModelAdmin):
     readonly_fields = ['slug']
     form = ShiftForm
     inlines = [TrainingInline,]
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

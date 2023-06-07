@@ -1,0 +1,7 @@
+@startuml
+(*) --> "DEFINITE Template"
+note right: FILTER: dept / sd-ID / isActive
+if "EXISTS" then
+-->[true] "EXISTS"
+
+@enduml

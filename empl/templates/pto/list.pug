@@ -1,0 +1,31 @@
+extends base
+
+
+block title
+    title  PTO Manager | #{employee}
+
+
+block styles
+
+block content
+
+    .m-10
+
+        a(href='../')
+            iconify-icon(icon="mdi:chevron-left" inline="true")
+            | Employee Home
+
+        hgroup
+            h1.text-teal-400.font-bold.text-2xl Employee PTO Requests
+            h2.text-xl= employee
+            hr
+
+
+        .bg-zinc-950.rounded.bordered
+            h3.text-lg.text-white.text-center
+                iconify-icon(icon="mdi:calendar-clock")
+                | PTO REQUESTS
+            span= pto_requests.count
+            hr
+            each pto in pto_requests
+                span.mx-1.bordered.text-xs.my-2  #{pto.date.month}/#{pto.date.day}

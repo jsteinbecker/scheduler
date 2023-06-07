@@ -1,26 +1,34 @@
-h2.text-xl Stats
+mixin stats-item(title, icon, value, isMet, fixLink)
+    if isMet == true
+        .flex.flex-row.items-center.gap-2
+            iconify-icon.text-emerald-200(icon="mdi:check-circle")
+            iconify-icon.text-zinc-200(icon=icon)
+            span #{title}
+            span.text-emerald-400 #{value}
+    else
+        .flex.flex-row.items-center.gap-2
+            iconify-icon.text-red-200(icon=icon)
+            span #{title}
+            span.text-red-400 #{value}
+            if fixLink != ""
+                a.bordered(href=fixLink)
+                    iconify-icon.pr-2(icon="bxs:magic-wand")
+                    span.text-xs FIX
 
-div.flex.flex-row
-    iconify-icon.pr-2(icon="mdi:account-multiple")
-    .font-light Best Version?:
-    .font-bold= version.is_best
+div(style="style=will-change: transform; transition: all 500ms cubic-bezier(0.03, 0.98, 0.52, 0.99) 0s; transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1);")
+    h2.text-xl Stats
 
-div.flex.flex-row
-    iconify-icon.pr-2(icon="uim:sync-exclamation")
-    .font-light No. of One-Offs:
-    .font-bold= version.n_disliked_one_offs
+        - var checkIsBest = version.is_best
+        - var checkOneOffs = version.n_disliked_one_offs < 40
+        - var checkEmpty = version.n_empty < 10
+        - var checkPto = n_pto_ct == 0
+        - var checkTdo = n_tdo_ct == 0
+        - var checkUnfavorables = version.n_unfavorables < 25
 
-div.flex.flex-row
-    iconify-icon.pr-2(icon="mdi:account-question")
-    .font-light No. of Unfilled Slots:
-    .font-bold= version.n_empty
+        +stats-item("Best Version", "mdi:account-multiple", version.is_best, checkIsBest, "")
+        +stats-item("# One-Off Shifts", "uim:sync-exclamation", version.n_disliked_one_offs, checkOneOffs, "")
+        +stats-item("# Empty", "mdi:account-question", version.n_empty, checkEmpty, "actions/solve/")
+        +stats-item("# Unfavorables", "mdi:account-check", version.n_unfavorables, checkUnfavorables, "")
+        +stats-item("# PTO Conflicts", "mdi:alert-circle", n_pto_ct, checkPto, "actions/resolve-pto/")
+        +stats-item("# TDO Conflicts", "mdi:warning", n_tdo_ct, checkTdo, "actions/resolve-tdo/")
 
-div.flex.flex-row
-    iconify-icon.pr-2(icon="mdi:account-check")
-    .font-light No. of Unfavorables:
-    .font-bold= version.n_unfavorables
-
-div.flex.flex-row
-    iconify-icon.pr-2(icon="mdi:alert-circle")
-    .font-light No. of PTO Conflicts:
-    .font-bold= n_pto_conflicts.count

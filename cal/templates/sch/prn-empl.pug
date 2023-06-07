@@ -1,0 +1,25 @@
+extends base
+
+block content
+
+    .m-10
+        a(href="../") Back to calendar
+
+        hgroup
+            h1.text-3xl.text-indigo-200 PRN Employee Setup
+            h2.text-xl.text-indigo-500 Schedule #{schedule}
+            hr
+
+        each employee in employees
+            div
+                h3.text-lg #{employee.name}
+                form
+                    input(type="hidden" name="employee" value="#{employee.id}")
+                    div #{employee}
+                    each week in week_count
+                        select(name="week" class="style")
+                            option(value="0" selected) 0 Shifts
+                            option(value="1") 1 Shift
+                            option(value="2") 2 Shifts
+                            option(value="3") 3 Shifts
+                            option(value="4") 4 Shifts

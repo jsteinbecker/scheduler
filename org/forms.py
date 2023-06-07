@@ -7,9 +7,8 @@ from .models import Organization, Department, Shift, Training
 class ShiftForm(forms.ModelForm):
 
     on_weekdays = forms.MultipleChoiceField(
-        choices=Shift.WeekdayChoices.choices,
-        widget=forms.CheckboxSelectMultiple,
-    )
+                            choices=Shift.WeekdayChoices.choices,
+                            widget=forms.CheckboxSelectMultiple)
 
     class Meta:
         model = Shift

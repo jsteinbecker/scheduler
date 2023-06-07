@@ -1,6 +1,9 @@
 extends base
 // {% load tags %}
 
+mixin spinner()
+    span {% spinner 0 %}
+
 block title
     title All Schedules (#{schedules.first.department.name})
 
@@ -37,13 +40,17 @@ block content
                     .card
                         .card-head
                             .card-title
-                                | {% icon "Template" %}
-                                .sm= schedule.status
+                                if schedule.status == 'Published'
+                                    iconify-icon(icon="carbon:rule")
+                                else
+                                    iconify-icon(icon="carbon:rule-draft")
+                                span.text-sm= schedule.status
                         .card-body
-                            .bold #{schedule.year} Schedule ##{schedule.num}
-                            .sm= schedule.start_date
+                            .bold.font-lg #{schedule.year} Schedule
+                            .text-3xl.font-light.float-right ##{schedule.num}
+                            .text-sm= schedule.start_date
 
-            a(href='new/')
+            a(href='new/' hx-indicator="#spinner-for-new")
                 .card-dashed
                     .card-dashed-head
                         .card-title
@@ -51,3 +58,5 @@ block content
                     .card-dashed-body
                             .bold Create new
                             .sm Schedule
+                            #spinner-for-new
+                                +spinner()

@@ -7,39 +7,46 @@ block styles
 
 block content
 
-    a(href='../../')
-        iconify-icon(icon="mdi:chevron-left")
-        | #{slot.workday.date}
-    .flexrow
-        each other in slot.workday.slots.all
-            if other.shift != slot.shift
-                div.px20
-                    a(href=other.url)= other.shift
-            else
-                div.px20.bg-zinc-100.text-zinc-800.rounded
-                    h1= slot.workday.date
-                    h2= slot.shift
-    if slot.template_employee
-        h6= slot.template_employee
-    else
-        h6 No Template
-    if slot.employee
-        h3= slot.employee
-    else
-        h5.op50
-            i No employee assigned
+    .m-10
 
-    .bordered(onclick="document.getElementById('option-explorer').showModal()")
-        span.xs #{slot.fills_with.allowed.count} options
-        span
-            iconify-icon(icon="mdi:chevron-down")
+        a(href='../../')
+            iconify-icon(icon="mdi:chevron-left")
+            | #{slot.workday.date}
 
-    include fills-with/option
+        .flex.flex-row.space-around
+            each other in slot.workday.slots.all
+                if other.shift != slot.shift
+                    div.px20
+                        a(href=other.url)= other.shift
+                else
+                    .flex.flex-col.align-items-center
+                        div.px20.bg-zinc-100.text-zinc-800.rounded
+                            h1= slot.workday.date
+                            h2= slot.shift
+
+                        if slot.template_employee
+                            if slot.employee == slot.template_employee
+                                h6.text-xs.text-emerald-300.bordered.bg-emerald-400.bg-opacity-25 TEMPLATED PROPERLY
+                            else
+                                h6.text-xs TPL: #{slot.template_employee}
+                        else
+                            h6.mx-auto.text-xs.bordered.bg-zinc-300.bg-opacity-10.opacity-75 No Template
+                        if slot.employee
+                            h3.mx-auto= slot.employee
+                        else
+                            h5.op50.mx-auto
+                                i No employee assigned
+                        .w-full.bordered.mx-auto(onclick="document.getElementById('option-explorer').showModal()")
+                            span.xs #{slot.fills_with.allowed.count} options
+                            span
+                                iconify-icon(icon="mdi:chevron-down")
+
+        include fills-with/option
 
 
-    script.
-        document.getElementById('option-explorer').addEventListener('click', function(e) {
-            if(e.target == this) {
-                this.close();
-            }
-        });
+        script.
+            document.getElementById('option-explorer').addEventListener('click', function(e) {
+                if(e.target == this) {
+                    this.close();
+                }
+            });

@@ -25,10 +25,11 @@ app_name = 'sch'
 
 urlpatterns = [
     path('grappelli/', include('grappelli.urls')),  # grappelli URLS
-    path('admin/', admin.site.urls),  # admin site
+    path('admin/doc/', include('django.contrib.admindocs.urls')),
+    path('admin/',     admin.site.urls),  # admin site
 
-    path('', index_view, name='index'),
+    path('',           index_view, name='index'),
 
-    path('login', login_view, name='login'),
-    path('org/', include('org.urls', namespace='org')),
+    path('login',      login_view, name='login'),
+    path('org/',       include('org.urls', namespace='org')),
 ]

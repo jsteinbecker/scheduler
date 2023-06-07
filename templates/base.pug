@@ -1,14 +1,19 @@
 !!! 5
-html
+html.html
 
     head
-        block title
+        if title
+            title= title
+        else
+            title FlowRate
         include includes/stylesheets
+        link(href="/static/scheduler/output.css" rel="stylesheet")
         script(src="/static/js/hyperscript.min.js")
         script(src="/static/js/htmx.min.js")
         block styles
         // favicon
         link(rel="icon" href="/static/favicon.ico" type="image/x-icon")
+
 
     body
         include includes/tailwind

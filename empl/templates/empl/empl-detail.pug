@@ -11,50 +11,45 @@ block styles
         .flexrow {display: flex; justify-content: start; align-items: flex-start;}
         .nobreak {white-space: nowrap;}
         .xxs {font-size: 10px; color: #999;}
+
 block content
-    a(href="../../")
-        iconify-icon(icon="mdi:chevron-left")
-        | #{employee.department.full_name}
+
+    .m-10
+
+        a(href="../../")
+            iconify-icon(icon="mdi:chevron-left")
+            | #{employee.department.full_name}
+
+        hgroup.mb-3
+            h1.text-3xl= employee
+            h3.text-lg.font-bold EMPLOYEE
+            hr
+
+        a.bg-zinc-200.bg-opacity-25.rounded.px-2.float-right.text-xs.text-white(
+            href="/admin/empl/employee/#{employee.id}/change/"
+            class="hover:bg-opacity-50 hover:bg-red-400")
+            | Edit Employee
+
+        .grid.grid-cols-2.gap-4.place-content-stretch
+            .bordered.w-fit
+                table
+                    each shift in employee.trainings.all
+                        tr
+                            td
+                                a(href='#{shift.shift.url}')= shift.shift.name
+                            td
+                                if shift.is_available
+                                    span.available AVAILABLE
+                                else
+                                    span.unavailable UNAVAILABLE
 
 
-    h1= employee
-    .dx-header EMPLOYEE
+            if template_set != None
+                include ../template-set/tset.pug
+            else
+                a(href="template-set/") Create Template Set
 
-    hr
 
 
-    table
-        tr
-            td Shifts Trained
-            td
-        each shift in employee.trainings.all
-            tr
-                td
-                    a(href='#{shift.shift.url}')= shift.shift.name
-                td
-                    if shift.is_available
-                        span.available AVAILABLE
-                    else
-                        span.unavailable UNAVAILABLE
-
-    a(href='new-tdoset/')
-        button New Template Day Off Set
-
-    if employee.templated_day_off_sets.exists
-        each tdoset in employee.templated_day_off_sets.all
-            .tdo
-                a(href="tdoset/#{tdoset.effective_date}/") TDOSET days=
-                    span= tdoset.day_list
-
-    if template_set != None
-        .flexrow
-            a(href="template-set/new/") Template Set
-            each template in template_set.templates.all
-                .bordered
-                    .nobreak
-                        .bold= template.shift.name
-                            sub.xxs.thin DAY #{template.sd_id}
-    else
-        a(href="template-set/new/") Create Template Set
 
 

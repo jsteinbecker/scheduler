@@ -1,0 +1,64 @@
+
+
+if template.state == 'A'
+    div.bg-green-800.bg-opacity-25.h-36.w-32.select-none
+        div= template.sd_id
+        iconify-icon.text-emerald-300.text-4xl.pr-1.float-right(icon="iconoir:eye-empty" inline="true")
+        div.text-emerald-500.font-thin General Availability
+
+if template.state == 'D'
+    div.bg-sky-800.bg-opacity-25.h-36.w-32.select-none
+        div.user-select-none #{template.sd_id} (#{weekday})
+        iconify-icon.text-teal-300.text-4xl.pr-1.float-right(icon="mdi:shield-key" inline="true")
+        div.text-sky-500.font-thin Distinct
+        form
+            select.appearance-none.px-2.bordered.border-r-8(
+                name='shift'
+                hx-post='#{template.sd_id}/'
+                hx-trigger='change'
+                hx-target='#target-#{template.sd_id}')
+                    option(value='') ---
+                    each shift in possibilities
+                        if shift == selected_shift
+                            option(value=shift.slug selected)= shift
+                        else
+                            option(value=shift.slug)= shift
+
+if template.state == 'G'
+    div.bg-purple-800.bg-opacity-25.h-expand.h-36.w-32.select-none
+        div= template.sd_id
+        iconify-icon.text-indigo-300.text-3xl.pr-1.float-right(icon="material-symbols:magic-exchange-rounded" inline="true")
+        div.text-purple-500.font-light Generic
+        form
+            fieldset.grid.grid-cols-3.pt-2
+                each shift in possibilities
+                    if shift in taken_slots
+                        span
+                    else
+                        label.text-xs
+                            | #{shift}
+                            if shift in template.shift_options.all
+                                input(
+                                    type='checkbox'
+                                    checked
+                                    name="shifts"
+                                    value=shift.slug
+                                    hx-post='#{template.sd_id}/'
+                                    hx-trigger='change'
+                                    hx-target='#target-#{template.sd_id}')
+                            else
+                                input(
+                                    type='checkbox'
+                                    name="shifts"
+                                    value=shift.slug
+                                    hx-post='#{template.sd_id}/'
+                                    hx-trigger='change'
+                                    hx-target='#target-#{template.sd_id}')
+
+if template.state == 'T'
+    div.bg-amber-800.bg-opacity-25.h-36.w-32.pr-1.select-none
+        div= template.sd_id
+        iconify-icon.text-orange-300.text-3xl.float-right(icon="carbon:palm-tree" inline="true")
+        div.text-amber-500.font-light Templated Day Off
+        div.text-red-300.text-3xl.font-bold TDO
+

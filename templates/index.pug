@@ -2,32 +2,39 @@ extends base
 
 
 block content
-    h1.text-3xl FlowRate Rx
-    h2.text-2xl Pharmacy Scheduling System
 
-    p Welcome to the FlowRate Rx Pharmacy Scheduling System.
+    .m-10
 
-    if user.is_authenticated
-        div
-            span.italic You are logged in as
-            span.user-chip
-                iconify-icon(icon="iconamoon:profile-circle-duotone")
-                | #{user.username}
+        hgroup.mb-3
+            h1
+                span.text-3xl.font-thin.text-indigo-100 Flow
+                span.text-3xl.font-bold.text-teal-300 Rate
+                span.text-3xl.font-thin.text-indigo-100 Rx
+            h2.text-2xl Pharmacy Scheduling System
+            hr
 
-        div
+        p Welcome to the FlowRate Rx Pharmacy Scheduling System.
+
+        if user.is_authenticated
+            div
+                span.italic You are logged in as
+                span.user-chip
+                    iconify-icon(icon="iconamoon:profile-circle-duotone")
+                    | #{user.username}
+
             include mixins/card
 
-    else
-        p.bordered
-            | Please login to continue.
-            .grid.grid-cols-3
-                form(method='post' action='/login')
-                    input(type='hidden' name='csrfmiddlewaretoken' value='#{csrf_token}')
-                    .grid-cell
-                        label(for='username') Username:
-                        input(type='text' name='username')
-                    .grid-cell
-                        label(for='password') Password:
-                        input(type='password' name='password')
-                    .grid-cell
-                        input(type='submit' value='Login')
+        else
+            p.bordered
+                | Please login to continue.
+                .grid.grid-cols-3
+                    form(method='post' action='/login')
+                        input(type='hidden' name='csrfmiddlewaretoken' value='#{csrf_token}')
+                        .grid-cell
+                            label(for='username') Username:
+                            input(type='text' name='username')
+                        .grid-cell
+                            label(for='password') Password:
+                            input(type='password' name='password')
+                        .grid-cell
+                            input(type='submit' value='Login')

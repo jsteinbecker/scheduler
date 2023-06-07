@@ -10,8 +10,8 @@ class OrgViews:
     @staticmethod
     def redirect_to_org(request):
         if request.user.is_authenticated:
-            if Organization.objects.filter(linked_accounts=request.user).exists():
-                org = Organization.objects.get(linked_accounts=request.user)
+            org = request.user.profile.department.organization
+            if org:
                 return HttpResponseRedirect(reverse('org:org-detail', args=(org.slug,)))
 
         return HttpResponseRedirect('/')

@@ -16,14 +16,15 @@ block content
             iconify-icon(icon="mdi:chevron-left")
             | #{department.organization.name}
 
-        h1= department
-        h2= department.full_name
+        h1.text-3xl.font-bold.text-sky-400= department
+        h2.text-lg.font-thin.text-indigo-200= department.full_name
         hr
 
 
         .flexrow.px-40
             div
-                h3.text-xl Shifts
+                h3.text-2xl.text-teal-400 Shifts
+
                 each shift in department.shifts.all
                     .bordered
                         a(href='shift/#{shift.slug}')= shift.name
@@ -31,12 +32,12 @@ block content
                             | #{shift.start_time}
                             span.op50 (#{shift.hours} hours)
             div
-                h3.text-xl Schedules
+                h3.text-2xl.text-teal-400 Schedules
                 a(href='sch/')
                     | Manage Schedules
                     iconify-icon(icon="mdi:chevron-right")
             div
-                h3.text-xl Employees
+                h3.text-2xl.text-teal-400 Employees
                 each employee in department.employees.active
                     .bordered
                         a(href='empl/#{employee.slug}/')= employee

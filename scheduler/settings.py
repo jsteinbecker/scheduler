@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -32,13 +31,14 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
     'grappelli',
+    'django_docutils',
     'pypugjs',
     'django.contrib.admin',
+    'django.contrib.admindocs',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -84,10 +84,51 @@ TEMPLATES = [
             ],
         },
     },
+    {
+        'NAME': 'docutils',
+        'BACKEND': 'django_docutils.engines.Docutils',
+        'DIRS': [],
+        'APP_DIRS': True,
+    }
 ]
 
 WSGI_APPLICATION = 'scheduler.wsgi.application'
 
+BASED_LIB_RST = {  # Optional, automatically maps roles, directives and transformers
+    'docutils': {
+        'raw_enabled': True,
+        'strip_comments': True,
+        'initial_header_level': 2,
+    },
+    'roles': {
+        'local': {
+            'gh': 'django_docutils.lib.roles.github.github_role',
+            'twitter': 'django_docutils.lib.roles.twitter.twitter_role',
+            'email': 'django_docutils.lib.roles.email.email_role',
+        }
+    },
+    'font_awesome': {  # Transformer to inject <em class="<class>"></em>
+        'url_patterns': {
+            r'.*github.com.*': 'fab fa-github',
+            r'.*twitter.com.*': 'fab fa-twitter',
+            r'.*amzn.to.*': 'fab fa-amazon',
+            r'.*amazon.com.*': 'fab fa-amazon',
+            r'.*news.ycombinator.com*': 'fab fa-hacker-news',
+            r'.*leanpub.com.*': 'fab fa-leanpub',
+            r'.*python.org.*': 'fab fa-python',
+            r'.*pypi.org.*': 'fab fa-python',
+            r'.*djangoproject.com.*': 'fab fa-python',
+            r'.*wikipedia.org.*': 'fab fa-wikipedia',
+            r'((rtfd|readthedocs).)*$': 'fab fa-books',
+            r'^mailto:.*': 'fas fa-envelope',
+            r'((?!mywebsite.com|localhost).)*$': 'fas fa-external-link',
+        }
+    },
+}
+
+BASED_LIB_TEXT = {  # Optional
+    'uncapitalized_word_filters': ['project.my_module.my_capitalization_fn']
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -96,9 +137,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    },
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -118,18 +158,18 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
+
+FILE_CHARSET = 'utf-8'
 
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -144,3 +184,5 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+GRAPPELLI_ADMIN_TITLE = "FlowRate Scheduling"

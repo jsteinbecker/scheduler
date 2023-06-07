@@ -1,0 +1,14 @@
+// SWITCH TEMPLATE SIZE BUTTON
+
+a.bordered.p-1.bg-zinc-900.bg-opacity-30(
+    href='switch-template-size/'
+    class="hover:bg-opacity-75")
+
+        - var templateSize = employee.template_size
+
+        if templateSize <= 2
+            iconify-icon(icon="ic:round-switch-access-shortcut" inline="true")
+            | Switch to 3-Week Template
+        else
+            iconify-icon(icon="ic:round-switch-access-shortcut" inline="true").rotate-180
+            | Switch to 2-Week Template

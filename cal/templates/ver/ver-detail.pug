@@ -1,12 +1,5 @@
 extends base
 // {% load tags %}
-block mixins
-    mixin actionButton(name, icon, link, cls)
-        a.dark-btn.text-xs(href=link class=cls)
-            | #{name}
-            iconify-icon.text-lg(icon="#{icon}")
-
-
 
 block styles
     style.
@@ -14,13 +7,15 @@ block styles
         .thin {font-weight: 200; color: #fff9;}
         .red {color: #f44336;}
         .op25 {opacity: 0.25;}
+        .text-2xs {font-size: 0.65rem;}
         .btn {padding: 5px 10px; border-radius: 5px; border: none; color: #fff; background-color: #2196f3; margin-right: 5px;}
         .blue-btn {padding: 5px 10px; border-radius: 5px; border: none; color: #fff; background-color: #2196f3; margin-right: 5px;}
         .blue-btn:hover {background-color: #1976d2; color: #fff;}
         .gray-btn {padding: 5px 10px; border-radius: 5px; border: none; color: #fff; background-color: #9e9e9e; margin-right: 5px;}
         .gray-btn:hover {background-color: #757575; color: #fff;}
-        .dark-btn {padding: 5px 10px; border-radius: 5px; border: none; color: #fff; background-color: #121212; margin-right: 5px;}
+        .dark-btn {padding: 5px 10px; border-radius: 5px; border: none; color: #fff; margin-right: 5px;}
         .dark-btn:hover {background-color: #575757; color: #fff;}
+        dialog {border-radius: 5px; border: none; box-shadow: 0 0 10px rgba(0,0,0,0.5); background-color: #1b1b1b;}
 
 block content
     script(type="text/hyperscript").
@@ -28,41 +23,69 @@ block content
             on mouseover
                 set $emp to @dataset.employee then
                 log 'MOUSEOVER' then
-                toggle .bg-blue-100 on <.employee[data-employee=$emp]/>
+                toggle .bg-blue-100 on <.employee[data-employee='$emp']/>
                 until mouseover end
+
 
     .p-10
 
         a(href='../../')
             iconify-icon(icon="mdi:chevron-left")
             | Schedule Overview
+
+        // SCHEDULE HEADER //
         hgroup
             h4= department
             h1.text-2xl
                 span.blue v#{version.num}
                 span Schedule #{version.schedule.num}, #{version.schedule.year}
                 span.thin (#{version.schedule.department.name})
+
             div(class="rounded-2xl bg-gradient-to-r from-teal-500 via-indigo-500 to-sky-500 p-1 shadow-xl m-2 w-24")
                 div(class="block rounded-xl text-2xl font-thin bg-black p-4")
                     | #{percent} %
+            hr
 
-        div.views
+        // DELETE VERSION //
+        div.float-right
+            if version.is_best != true
+                a.bg-red-600.rounded.text-xs.text-red-100.px-2.w-fit(href='delete/')
+                    iconify-icon.text-red-100(iccn="mdi:trash-can")
+                    | Delete Version
+
+        // VERSION VIEWS //
+        div.views.flex.flex-row.gap-3
             h3.text-lg
-                i.fas.fa-magnifying-glass
+                iconify-icon(icon="mdi:magnify")
                 | Views
-            a(href='views/unfavorables/') Unfavorables
 
+            mixin view-link(name, link)
+                a.text-xs.tracking-wider.uppercase(href=link)= name
+
+            +view-link("Unfavorables", "views/unfavorables/")
+            +view-link("One Offs", "views/one-offs/")
+            +view-link("Conflicts", "views/conflicts/")
+        hr.mb-1
+
+        // VERSION STATS //
         div.float-right
             include ./partials/stats
 
-        .flexrow.w-fit.center-self.mb-2
-            +actionButton("ASSIGN TEMPLATE SLOTS", "mdi:calendar-blank", "actions/assign-templates/", "bg-blue-500")
-            +actionButton("RESET", "fluent:eraser-20-filled", "actions/reset/", "bg-gray-700")
-            +actionButton("SOLVE", "mdi:cogs", "actions/solve/", "bg-gray-700")
-            if version.n_disliked_one_offs > 10
-                +actionButton("RETRY ONE OFF ASSIGNMENTS", "mdi:sync-alert", "actions/retry-one-offs/", "bg-gray-700")
+        // VERSION ACTIONS //
+        include ./partials/action-btn-group
+
+        .flex.flex-row.gap-5
+            div.text-xs.bordered
+                span.bold WEEK IDS:
+                | #{ wk_id_list }
+            div.text-xs.bordered
+                span.bold PAY PERIOD IDS:
+                |  #{ prd_id_list }
+
 
         .flex.flex-row
+
+            // VERSION ALERT TOOLBAR //
             .bordered.text-center
                 .flexrow.w-fit.center-self.mb-2
                     span.text-xs ALERTS
@@ -71,6 +94,7 @@ block content
                 if version.percent < 0.94
                         iconify-icon.text-xl.text-red-300(icon="icon-park-solid:pie-one")
 
+            // VERSION SCHEDULE TABLE VIEW //
             .border.rounded.px-2.w-fit
                 table
                     thead
@@ -89,6 +113,11 @@ block content
                                 a(href="wd/#{workday.date}/")
                                     iconify-icon(icon="mdi:magnify")
 
+                                if workday.on_pto.count > 0
+                                    span.text-xs.opacity-40.bordered PTO x#{workday.on_pto.count}
+                                else
+                                    span.text-2xs.opacity-20.px-2 NO PTO
+
                             each shift in all_shifts
 
                                 // WORKDAY SHIFTS //
@@ -96,27 +125,25 @@ block content
                                     each slot in workday.slots.all
                                         if slot.shift == shift
                                             if slot.employee != None
-                                                .bordered
+                                                .bordered.employee(data-employee=slot.employee.slug)
                                                     a(href="emp/#{slot.employee.slug}/")= slot.employee.initials
-                                                    if slot.state == 'P'
+                                                    if slot.state.is_pto_conflict == True
                                                         iconify-icon.text-red-400(icon="ph:shield-warning-bold" @inline="true")
-                                                    if slot.is_one_off
-                                                        iconify-icon.text-xs(icon="uim:sync-exclamation" inline="true")
+                                                    if slot.state.is_disliked == True
+                                                        iconify-icon.text-red-400(icon="ph:thumb-down-bold" @inline="true")
+                                                    if slot.state.is_one_off == True
+                                                        iconify-icon.text-xs.text-amber-500(icon="uim:sync-exclamation" inline="true")
                                             else
                                                 if slot.template_employee != None
-                                                    iconify-icon.blue(icon="mdi:account-check")
-                                                if slot.fills_with.count == 0
-                                                    iconify-icon.red(icon="mdi:account-question")
-                                                if slot.fills_with.count > 0
-                                                    span.op25.text-2xs= slot.option_count
-
-
-    script.
-        // on doc ready, add .bgblueop25 to all rows with data-week % 2 == 0
-        $(document).ready(function() {
-            $("tr[data-week]").each(function() {
-                if ($(this).data("week") % 2 == 0) {
-                    $(this).addClass("bgblueop25");
-                }
-            });
-        });
+                                                    if slot.template_employee in wd.on_pto
+                                                        iconify-icon.text-xs.text-amber-500(icon="uim:account")
+                                                    else
+                                                        iconify-icon.blue(icon="mdi:account-check")
+                                                else
+                                                    if slot.fills_with.count == 0
+                                                        iconify-icon.red(icon="mdi:account-question")
+                                                    else
+                                                        if slot.fills_with.count > 0
+                                                            div.border.rounded-full.h-4.text-center.w-4.op25.text-2xs= slot.fills_with.count
+    dialog#solve-dialog
+        include ./partials/solve-form-dialog

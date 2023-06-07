@@ -1,0 +1,12 @@
+extends base
+
+block content
+
+    hgroup
+        h1.text-3xl.font-bold.text-teal-500 All Employees (#{user.organization})
+        h3 Employee List
+        hr
+
+    each employee in employees
+        div
+            a(href="#{employee.url}") #{employee}

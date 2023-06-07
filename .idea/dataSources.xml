@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="db" uuid="9889a0e8-44a8-41af-bc18-b6c065bb62e3">
+    <data-source source="LOCAL" name="db.sqlite3" read-only="true" uuid="e3bc0bfb-5b7c-4f50-b497-caf2ba68a931">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/db.sqlite3</jdbc-url>
+      <jdbc-url>jdbc:sqlite:db.sqlite3</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
-      <libraries>
-        <library>
-          <url>file://$APPLICATION_CONFIG_DIR$/jdbc-drivers/Xerial SQLiteJDBC/3.40.1/sqlite-jdbc-3.40.1.jar</url>
-        </library>
-      </libraries>
     </data-source>
-    <data-source source="LOCAL" name="Django default" uuid="703d227e-6b71-45bd-b559-48685d31d8a1">
+    <data-source source="LOCAL" name="db.sqlite3 [2]" read-only="true" uuid="4fe9ae41-be69-4bc2-98f1-dc84481a1a62">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:db.sqlite3</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="Django default" uuid="6114b49b-aded-46d7-a4db-8bc0f0003c08">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <imported>true</imported>

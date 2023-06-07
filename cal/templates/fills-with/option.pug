@@ -5,36 +5,26 @@ mixin fill-button(option)
             | Assign
             iconify-icon(icon="mdi:account-check")
 
-dialog#option-explorer
-        h3.text-2xl.text-white #{slot.shift} #{slot.date}
-        h2.text-xl.text-teal-200.font-bold Option Explorer
+dialog#option-explorer.bg-zinc-800
+        h3.text-3xl.text-white #{slot.shift} #{slot.date}
+        h2.text-md.text-teal-200.font-thin Option Explorer
 
-        table.rounded-lg.bg-gray-100.bg-opacity-25
-            tr.text-zinc-300
+        table.rounded-lg.bg-gray-950.bg-opacity-25
+            tr.text-zinc-300.text-xs
                 th Employee
-                th Week
-                th /Needed
-                th Period
-                th /Needed
+                th Week Needed
+                th Period Needed
                 th Actions
+
             each option in fills_with.all
                 tr(data-checks-ok=option.checks_ok)
 
-                    td= option.employee
-
-                    - var wk_fte = option.employee.fte * 40
-                    if option.hours_in_week > wk_fte
-                        td.red= option.hours_in_week
-                    else
-                        td #{option.hours_in_week}hrs
+                    td
+                        span= option.employee
+                        a.pr-3(href=option.employee.url)
+                            iconify-icon(icon="mdi:account-circle")
 
                     td #{option.hours_needed_in_week}hrs
-
-                    - var pd_fte = option.employee.fte * 80
-                    if option.hours_in_period > pd_fte
-                        td.red #{option.hours_in_period}hrs
-                    else
-                        td #{option.hours_in_period}hrs
 
                     td #{option.hours_needed_in_period}hrs
 
